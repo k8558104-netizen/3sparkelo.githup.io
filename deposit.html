@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEON CASINO — Пополнение</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#050a08;color:white;
+ font-family:Arial,sans-serif;padding:20px;
+}
+.container{max-width:460px;margin:auto}
+h1{text-align:center;color:#00ff88}
+.card{
+ background:#0d1812;border:1px solid #00ff8844;
+ border-radius:18px;padding:20px;margin-top:18px;
+}
+.subtitle{color:#91a398;font-size:14px;line-height:1.5}
+.banks{
+ display:grid;grid-template-columns:1fr 1fr;gap:12px;
+ margin-top:18px;
+}
+.bank{
+ padding:18px 8px;background:#101f17;
+ border:1px solid #284b35;border-radius:13px;
+ text-align:center;cursor:pointer;
+}
+.bank.selected{
+ border:2px solid #00ff88;
+ box-shadow:0 0 15px #00ff8833;
+}
+.logo{font-size:27px;font-weight:bold}
+.bank-name{font-size:13px;margin-top:8px}
+input{
+ width:100%;padding:15px;margin-top:15px;
+ border-radius:10px;border:1px solid #31543d;
+ background:#07100b;color:white;font-size:18px;
+}
+button{
+ width:100%;padding:15px;border:0;border-radius:10px;
+ background:#00ed80;color:#001b0d;
+ font-weight:bold;font-size:16px;margin-top:15px;
+ cursor:pointer;
+}
+.item{
+ background:#07100b;padding:15px;border-radius:11px;
+ margin-top:12px;border:1px solid #244b34;
+}
+.small{color:#81958a;font-size:12px}
+.value{font-size:17px;font-weight:bold;margin-top:7px}
+#amountBox,#payment{display:none}
+.timer{font-size:30px;color:#00ff88;font-weight:bold}
+.notice{
+ background:#302719;color:#ffdc8a;
+ border-radius:10px;padding:13px;
+ font-size:12px;line-height:1.5;margin-top:15px;
+}
+.demo{
+ text-align:center;color:#ffcf65;
+ font-size:12px;margin-top:12px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>NEON CASINO</h1>
+
+<div class="card" id="methods">
+ <h2>Пополнение счёта</h2>
+ <p class="subtitle">Выберите удобный способ пополнения</p>
+
+ <div class="banks">
+  <div class="bank" onclick="choose(this,'Т-Банк')">
+   <div class="logo">🟡</div>
+   <div class="bank-name">Т-Банк</div>
+  </div>
+  <div class="bank" onclick="choose(this,'Ozon Банк')">
+   <div class="logo">🟣</div>
+   <div class="bank-name">Ozon Банк</div>
+  </div>
+  <div class="bank" onclick="choose(this,'Сбербанк')">
+   <div class="logo">🟢</div>
+   <div class="bank-name">Сбербанк</div>
+  </div>
+  <div class="bank" onclick="choose(this,'Другой банк')">
+   <div class="logo">🏦</div>
+   <div class="bank-name">Другой банк</div>
+  </div>
+ </div>
+ <p class="demo">ДЕМО-МАКЕТ — платежи не принимаются</p>
+</div>
+
+<div class="card" id="amountBox">
+ <h2 id="selectedBank">Выбранный банк</h2>
+ <p class="subtitle">Введите сумму от 3 000 до 50 000 ₽</p>
+ <input id="amount" type="number" min="3000"
+ max="50000" placeholder="Сумма в рублях">
+ <button onclick="createPayment()">Продолжить</button>
+ <button onclick="backToBanks()"
+ style="background:#203329;color:white">Назад</button>
+</div>
+
+<div class="card" id="payment">
+ <h2>Заявка создана</h2>
+ <p class="subtitle">Демонстрационная заявка на пополнение</p>
+
+ <div class="item">
+  <div class="small">Сумма заявки</div>
+  <div class="value" id="sum"></div>
+ </div>
+ <div class="item">
+  <div class="small">Способ пополнения</div>
+  <div class="value" id="bankResult"></div>
+ </div>
+ <div class="item">
+  <div class="small">Демонстрационные реквизиты</div>
+  <div class="value">4400430016245208</div>
+ </div>
+ <div class="item">
+  <div class="small">Получатель</div>
+  <div class="value">NEON DEMO</div>
+ </div>
+
+ <p class="subtitle">Время до окончания демонстрационной заявки:</p>
+ <div class="timer" id="timer">15:00</div>
+
+ <div class="notice">
+  Это демонстрационная страница для портфолио.
+  Реквизиты вымышленные, банковские переводы
+  и реальное зачисление средств не выполняются.
+ </div>
+ <button onclick="location.href='index.html'">
+  Вернуться в казино
+ </button>
+</div>
+</div>
+
+<script>
+let selected='';
+let interval;
+
+function choose(element,bank){
+ document.querySelectorAll('.bank').forEach(x=>
+  x.classList.remove('selected'));
+ element.classList.add('selected');
+ selected=bank;
+ document.getElementById('selectedBank').textContent=bank;
+ document.getElementById('amountBox').style.display='block';
+ document.getElementById('amountBox').scrollIntoView({
+  behavior:'smooth'
+ });
+}
+
+function backToBanks(){
+ document.getElementById('amountBox').style.display='none';
+}
+
+function createPayment(){
+ const amount=Number(document.getElementById('amount').value);
+ if(!Number.isFinite(amount)||amount<3000||amount>50000){
+  alert('Введите сумму от 3000 до 50000 ₽');
+  return;
+ }
+ document.getElementById('sum').textContent=
+  amount.toLocaleString('ru-RU')+' ₽';
+ document.getElementById('bankResult').textContent=selected;
+ document.getElementById('methods').style.display='none';
+ document.getElementById('amountBox').style.display='none';
+ document.getElementById('payment').style.display='block';
+ startTimer();
+}
+
+function startTimer(){
+ clearInterval(interval);
+ let seconds=900;
+ function update(){
+  const m=Math.floor(seconds/60);
+  const s=seconds%60;
+  document.getElementById('timer').textContent=
+   String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  if(seconds<=0){
+   clearInterval(interval);
+   document.getElementById('timer').textContent='ВРЕМЯ ИСТЕКЛО';
+   return;
+  }
+  seconds--;
+ }
+ update();
+ interval=setInterval(update,1000);
+}
+</script>
+</body>
+</html>
